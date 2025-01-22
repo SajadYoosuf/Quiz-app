@@ -71,4 +71,4 @@ A simple and engaging quiz application built using **Flutter**. This app is desi
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/quiz-app.git
+   git clone https://github.com/SajadYoosuf/quiz-app.git
