@@ -283,6 +283,9 @@ class CategoryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var quizPageFunctions = Provider.of<QuizPageFunctions>(context);
     quizPageFunctions.recieveDataFromSharedPreference();
+    var size = MediaQuery.of(context).size;
+    var width = size.width;
+    var height = size.height;
     return WillPopScope(
       onWillPop: () {
         Navigator.push(
@@ -294,25 +297,17 @@ class CategoryPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: const Color(0xFF1f1147),
         appBar: AppBar(
-          leading: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: CircleAvatar(
-              radius: 10,
-              backgroundColor: const Color(0xFF32177d),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: Color.fromARGB(255, 240, 240, 242),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                      // ignore: use_build_context_synchronously
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const HomePage()));
-                },
-              ),
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Color.fromARGB(255, 240, 240, 242),
             ),
+            onPressed: () {
+              Navigator.push(
+                  // ignore: use_build_context_synchronously
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()));
+            },
           ),
           backgroundColor: const Color(0xFF1f1147),
           centerTitle: true,
@@ -338,7 +333,7 @@ class CategoryPage extends StatelessWidget {
                     },
                     child: Container(
                       //bank container
-                      margin: const EdgeInsets.only(left: 50),
+                      margin: EdgeInsets.only(left: width * 0.09),
                       width: 250,
                       height: 80,
                       decoration: BoxDecoration(
@@ -353,7 +348,7 @@ class CategoryPage extends StatelessWidget {
                             builder: (context) => const ScoreDisplayPage())),
                     child: Container(
                       //for display recent score
-                      margin: const EdgeInsets.only(left: 20),
+                      margin: EdgeInsets.only(left: width * 0.05),
                       width: 250,
                       height: 85,
                       decoration: BoxDecoration(
@@ -430,8 +425,8 @@ class CategoryPage extends StatelessWidget {
                       ),
                     ),
                   ),
-            const SizedBox(
-              height: 80,
+            SizedBox(
+              height: height * 0.09,
             ),
             Center(
               child: categoryContainer(

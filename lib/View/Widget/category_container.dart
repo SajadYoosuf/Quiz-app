@@ -5,7 +5,7 @@ import '../../Model/quiz_full_data.dart';
 import '../../ViewModel/quiz_page_functions.dart';
 import '../quiz_page.dart';
 
-Widget  categoryContainer(
+Widget categoryContainer(
   BuildContext context,
   String categoryName,
   String categoryImage,
@@ -13,6 +13,9 @@ Widget  categoryContainer(
   List<QuizFullData> quizFullData,
 ) {
   var functions = Provider.of<QuizPageFunctions>(context);
+  var size = MediaQuery.of(context).size;
+  var width = size.width;
+  var hieght = size.height;
   return GestureDetector(
     onTap: () {
       functions.resetVariables(quizFullData);
@@ -33,8 +36,8 @@ Widget  categoryContainer(
     // ignore: use_build_context_synchronously
 
     child: Container(
-      height: 150,
-      width: 300,
+      height: hieght * 0.19,
+      width: width * 0.80,
       decoration: BoxDecoration(
           color: containerColor, borderRadius: BorderRadius.circular(30)),
       child: Column(

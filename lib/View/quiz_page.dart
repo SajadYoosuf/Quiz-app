@@ -14,6 +14,9 @@ class QuizPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    var width = size.width;
+    var height = size.height;
     return Consumer<QuizPageFunctions>(
         builder: (context, quizPageFuncitons, child) {
       Duration duration = Duration(seconds: quizPageFuncitons.time);
@@ -41,7 +44,7 @@ class QuizPage extends StatelessWidget {
             ),
             body: Column(children: [
               Padding(
-                padding: const EdgeInsets.only(left: 30, top: 30),
+                padding: EdgeInsets.only(left: width * 0.07, top: 30),
                 child: Row(
                   children: [
                     Text(
@@ -53,8 +56,8 @@ class QuizPage extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(
-                      width: 230,
+                    SizedBox(
+                      width: width * 0.60,
                     ),
                     Text("$minutes:$seconds",
                         style: const TextStyle(
@@ -85,9 +88,9 @@ class QuizPage extends StatelessWidget {
                 height: 10,
               ),
               Container(
-                margin: const EdgeInsets.only(left: 30),
-                width: 270,
-                height: 150,
+                margin: EdgeInsets.only(left: width * 0.03),
+                width: width * 0.80,
+                height: height * 0.20,
                 decoration: BoxDecoration(
                     color: const Color(0xFF1f1147),
                     borderRadius: BorderRadius.circular(14)),
@@ -95,9 +98,9 @@ class QuizPage extends StatelessWidget {
                   quizFullData[quizPageFuncitons.currentIndex].images!,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
-                        margin: const EdgeInsets.only(left: 0),
-                        width: 270,
-                        height: 150,
+                        margin: EdgeInsets.only(left: width * 0.03),
+                        width: width * 0.80,
+                        height: height * 0.20,
                         decoration: BoxDecoration(
                             color: const Color(0xFF1f1147),
                             borderRadius: BorderRadius.circular(14)));
@@ -145,11 +148,11 @@ class QuizPage extends StatelessWidget {
                   4,
                 ),
               ),
-              const SizedBox(
-                height: 30,
+              SizedBox(
+                height: height * 0.08,
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.only(bottom: 20),
                 child: Row(
                   children: [
                     const SizedBox(

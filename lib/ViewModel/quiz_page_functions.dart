@@ -8,7 +8,7 @@ import '../View/category_page.dart';
 import '../View/score_display_page.dart';
 
 class QuizPageFunctions extends ChangeNotifier {
-  int time = 300;
+  int time = 7000;
   int optionCheckeingIndex = 0;
   int currentIndex = 0;
   int checkingWhichIndexinsideAnswer = 0;
@@ -33,7 +33,7 @@ class QuizPageFunctions extends ChangeNotifier {
 
 //each time user entering page then reinitilizing full variables
   void resetVariables(List<QuizFullData> fullData) {
-    time = 300;
+    time = 7000;
     optionCheckeingIndex = 0;
     currentIndex = 0;
     checkingWhichIndexinsideAnswer = 0;
@@ -173,11 +173,11 @@ class QuizPageFunctions extends ChangeNotifier {
                   child: ElevatedButton(
                       onPressed: () {
                         scoreHistory.add(finalMark.toString());
-          currentTime = 300 - currentTime;
-          timeHistory.add(currentTime.toString());
-          categoryHistory.add(heading);
-          storingDataToSharedPreference(
-              scoreHistory, timeHistory, categoryHistory);
+                        currentTime = 300 - currentTime;
+                        timeHistory.add(currentTime.toString());
+                        categoryHistory.add(heading);
+                        storingDataToSharedPreference(
+                            scoreHistory, timeHistory, categoryHistory);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -250,13 +250,13 @@ class QuizPageFunctions extends ChangeNotifier {
                   height: 60,
                   width: 200,
                   child: ElevatedButton(
-                    
-                      onPressed: () { Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CategoryPage(),
-                            ),
-                          );
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CategoryPage(),
+                          ),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF189afd)),
@@ -318,20 +318,20 @@ class QuizPageFunctions extends ChangeNotifier {
                     height: 60,
                     width: 200,
                     child: ElevatedButton(
-                       onPressed: () { 
+                        onPressed: () {
                           scoreHistory.add(finalMark.toString());
-          timeRemaining = 300 - timeRemaining;
-          timeHistory.add(timeRemaining.toString());
-          categoryHistory.add(quizHeading);
-          storingDataToSharedPreference(
-              scoreHistory, timeHistory, categoryHistory);
-              Navigator.push(
+                          timeRemaining = 300 - timeRemaining;
+                          timeHistory.add(timeRemaining.toString());
+                          categoryHistory.add(quizHeading);
+                          storingDataToSharedPreference(
+                              scoreHistory, timeHistory, categoryHistory);
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => CategoryPage(),
                             ),
                           );
-                      },
+                        },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFfb8a3e)),
                         child: const Center(
