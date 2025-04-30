@@ -2,6 +2,7 @@ import 'package:quiz_app/Model/quiz_history.dart';
 import 'package:quiz_app/View/home_screen.dart';
 import 'package:quiz_app/View/login_screen.dart';
 import 'package:quiz_app/ViewModel/RouteObserver/observ_utils.dart';
+import 'package:quiz_app/ViewModel/quiz_rewiew_provider.dart';
 import 'package:quiz_app/firebase_options.dart';
 
 import 'package:quiz_app/utilities/constant.dart';
@@ -72,9 +73,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => LeaderBoardProvider(),
         ),
-        ChangeNotifierProvider(create: (_) => LocalStorageProvider()),
         ChangeNotifierProvider(create: (_) => ProfilePageFunctions()),
-        ChangeNotifierProvider(create: (_) => Navigation())
+        ChangeNotifierProvider(create: (_) => Navigation()),
+        ChangeNotifierProvider(create: (_) => QuizRewiewProvider()),
+        ChangeNotifierProvider(create: (_) => LocalStorageProvider())
       ],
       child: MaterialApp(
           navigatorObservers: [ObserverUtils.routeObserver],

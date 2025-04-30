@@ -13,12 +13,13 @@ class HomePageProvider extends ChangeNotifier {
     var imageD;
 
     String? result = await FirebaseFirestoreData.getUser();
+    score = await FirebaseFirestoreData.getLeaderBoardScore();
     print('result is $result');
     // ignore: avoid_print
     if (result == 'successfully fetched userData') {
       print(FirebaseFirestoreData.userData);
-      userName = FirebaseFirestoreData.userData[0];
-      imageD = FirebaseFirestoreData.userData[1];
+      userName = FirebaseFirestoreData.userData[1];
+      imageD = FirebaseFirestoreData.userData[3];
       print("the user name $userName the photo is $imageD");
       if (imageD.startsWith('http://') || imageD.startsWith('https://')) {
         profileImage = imageD;

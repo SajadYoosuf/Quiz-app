@@ -1,17 +1,29 @@
+// build.gradle (Project Level)
+buildscript {
+    repositories {
+        google() // Required for Android dependencies
+        mavenCentral() // Required for other dependencies like Kotlin
+    }
+    dependencies {
+        // Ensure you're using a compatible Gradle plugin version
+        classpath 'com.android.tools.build:gradle:7.3.0'  // Use the appropriate version for your project
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"  // Ensure the Kotlin version is compatible
+    }
+}
 allprojects {
     repositories {
         google()
         mavenCentral()
     }
+   
 }
 
 rootProject.buildDir = "../build"
 subprojects {
-<<<<<<< HEAD
-=======
     afterEvaluate { project ->
         if (project.hasProperty('android')) {
-            project.android {
+            project.android
+             {
                 namespace = namespace ?: project.group
                 compileSdkVersion 34
 buildToolsVersion "28.0.3"
@@ -20,7 +32,6 @@ buildToolsVersion "28.0.3"
     }
 }
 subprojects {
->>>>>>> ee6710f (Initial commit)
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
 subprojects {

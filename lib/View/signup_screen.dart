@@ -105,7 +105,7 @@ class SignUpScreen extends StatelessWidget {
                   if (_formKey.currentState!.validate()) {
                     // If the form is valid, display a snackbar. In the real world,
                     // you'd often call a server or save the information in a database.
-
+                    print(signUpPage.emailController.text);
                     signUpPage.registerNewUserWithEmailAndPassword(
                         signUpPage.emailController.text,
                         signUpPage.passwordController.text,

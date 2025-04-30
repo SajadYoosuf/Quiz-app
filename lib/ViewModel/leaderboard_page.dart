@@ -6,33 +6,43 @@ class LeaderBoardProvider extends ChangeNotifier {
   List<Map<String, dynamic>> top3List = [];
   List<Map<dynamic, dynamic>> leaderboard = [];
   int? currentUserLeaderBoardRank;
+  String score = '';
   Future<void> getLeaderBoardData(BuildContext context) async {
+    print('somethign calling');
     var data = await FirebaseFirestoreData.getLeaderBoardData();
-    String score = await FirebaseFirestoreData.getLeaderBoardScore();
+    score = await FirebaseFirestoreData.getLeaderBoardScore();
+    print(data);
+    print(score);
     List<int> reseversedList = [];
-    for (var i = 0; i < data.length; i++) {
-      reseversedList.add(int.parse(data[i][leaderBoardScore]));
-    }
-    reseversedList.sort((b, a) => a.compareTo(b));
-    for (var i = 0; i < data.length; i++) {
-      for (var j = i; j < data.length; j++) {
-        if (i <= 2) {
-          if (data[i][leaderBoardScore] == reseversedList[j]) {
-            if (int.parse(score) == reseversedList[j]) {
+    if (data.isNotEmpty) {
+      for (var i = 0; i < data.length; i++) {
+        reseversedList.add(int.parse(data[i][leaderBoardScore]));
+      }
+      reseversedList.sort((b, a) => a.compareTo(b));
+      for (var i = 0; i < data.length; i++) {
+        print('called during loop');
+
+        for (var j = i; j < data.length; j++) {
+          if (i <= 2) {
+            if (data[i][leaderBoardScore] == reseversedList[j]) {
+              if (int.parse(score) == reseversedList[j]) {
+                print('called during score');
+                currentUserLeaderBoardRank = j;
+              }
+              top3List.add(data[j]);
+            }
+          } else {
+            if (int.parse(score) == reseversedList[i]) {
               currentUserLeaderBoardRank = j;
             }
-            top3List.add(data[j]);
+            leaderboard.add(data[j]);
           }
-        } else {
-          if (int.parse(score) == reseversedList[i]) {
-            currentUserLeaderBoardRank = j;
-          }
-          leaderboard.add(data[j]);
         }
       }
     }
-    // print(top3List);
-    // print(leaderboard);
+
+    print(top3List);
+    print(leaderboard);
     notifyListeners();
   }
 }

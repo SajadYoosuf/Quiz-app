@@ -40,8 +40,6 @@ class ProfilePageFunctions extends ChangeNotifier {
   bool isLoad = true;
   var connectivityResult = (Connectivity().checkConnectivity());
 
-  final key = GlobalKey<FormState>();
-
   final picker = ImagePicker();
   void chagne() {
     userNameController.text = '';
@@ -50,6 +48,7 @@ class ProfilePageFunctions extends ChangeNotifier {
   }
 
   void refreshVaribles() {
+    print('called success');
     percentage = 0;
     totalPoints = 0;
     attemptCountOnToday = 0;
@@ -57,6 +56,7 @@ class ProfilePageFunctions extends ChangeNotifier {
     highestScore = 0;
     totalTimeSpent = '';
     lessTime = 0;
+    notifyListeners();
   }
 
   Future getImageFromGallery(BuildContext context) async {
@@ -170,8 +170,8 @@ class ProfilePageFunctions extends ChangeNotifier {
     // ignore: avoid_print
     if (result == 'successfully fetched userData') {
       print(FirebaseFirestoreData.userData);
-      userName = FirebaseFirestoreData.userData[0];
-      imageD = FirebaseFirestoreData.userData[1];
+      userName = FirebaseFirestoreData.userData[1];
+      imageD = FirebaseFirestoreData.userData[3];
       print("the user name $userName the photo is $imageD");
       if (imageD.startsWith('http://') || imageD.startsWith('https://')) {
         profileImage = imageD;

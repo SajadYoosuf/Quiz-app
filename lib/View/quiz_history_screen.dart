@@ -13,14 +13,14 @@ import 'package:provider/provider.dart';
 // import '../Model/quiz_full_data.dart';
 import '../ViewModel/quiz_related_functions.dart';
 
-class ScoreDisplayPage extends StatefulWidget {
-  const ScoreDisplayPage({super.key});
+class QuizHistoryScreen extends StatefulWidget {
+  const QuizHistoryScreen({super.key});
 
   @override
-  State<ScoreDisplayPage> createState() => _ScoreDisplayPageState();
+  State<QuizHistoryScreen> createState() => _QuizHistoryScreenState();
 }
 
-class _ScoreDisplayPageState extends State<ScoreDisplayPage> {
+class _QuizHistoryScreenState extends State<QuizHistoryScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {

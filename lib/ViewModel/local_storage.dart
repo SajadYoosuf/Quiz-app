@@ -10,43 +10,34 @@ class LocalStorageProvider extends ChangeNotifier {
   List<bool> storingAchievementState = List.generate(
       achievementMessages.length, (int index) => false,
       growable: false);
-  List<String> getList = List.generate(
-      achievementMessages.length, (int index) => 'false',
-      growable: false);
+
   Future<void> storingDataToHive(QuizHistory quizHistory) async {
     Box<QuizHistory> quizBox = Hive.box<QuizHistory>(quizHistoryHiveKey);
     quizBox.add(quizHistory);
-    notifyListeners();
   }
 
   storingBoolList(List<bool> boolList) async {
     final prefs = await SharedPreferences.getInstance();
-    print(boolList.length);
-    for (int i = 0; i < boolList.length; i++) {
-      if (boolList[i]) {
-        getList.add('true');
-      } else {
-        getList.add('false');
-      }
-    }
-    prefs.setStringList('achive', getList);
+
+    List<String> tempList = boolList.map((e) => e ? 'true' : 'false').toList();
+
+    print('Storing list:');
+    print(tempList);
+
+    await prefs.setStringList('achive', tempList); // Store fresh list
   }
 
   Future<List<bool>> reciveBoolList() async {
     final prefs = await SharedPreferences.getInstance();
-    getList = prefs.getStringList('achive') ?? getList;
-    print('this is getList');
-    print(getList);
 
-    for (var i = 0; i < getList.length; i++) {
-      if (getList[i] == 'false') {
-        storingAchievementState[i] = false;
-      } else {
-        storingAchievementState[i] = true;
-      }
-    }
-    print('this is actual list');
-    print(storingAchievementState);
+    // Load fresh list
+    List<String> loadedList =
+        prefs.getStringList('achive') ?? List.generate(15, (_) => 'false');
+
+    // Map to bool list
+    storingAchievementState = loadedList.map((e) => e == 'true').toList();
+
+    print('Loaded bool list: $storingAchievementState');
 
     return storingAchievementState;
   }
@@ -55,7 +46,6 @@ class LocalStorageProvider extends ChangeNotifier {
     print('object');
     Box<QuizHistory> quizBox = Hive.box<QuizHistory>(quizHistoryHiveKey);
     quizHistory = quizBox.values.toList(growable: true);
-    notifyListeners();
 
     return quizHistory;
   }

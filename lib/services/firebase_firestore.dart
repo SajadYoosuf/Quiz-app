@@ -37,10 +37,10 @@ class FirebaseFirestoreData {
       final uid = auth.currentUser!.uid;
       final snapshot = await users.doc(uid).get();
 
-      userData.add(snapshot[userName]);
-      userData.add(snapshot[userPhoto]);
       userData.add(snapshot[userEmail]);
+      userData.add(snapshot['user_name']);
       userData.add(snapshot[userPassword] ?? 'password');
+      userData.add(snapshot[userPhoto]);
       if (userData.isNotEmpty) {
         return 'successfully fetched userData';
       }
@@ -78,13 +78,13 @@ class FirebaseFirestoreData {
     if (userScore.contains(RegExp(r'\d'))) {
       FirebaseFirestore.instance.collection('LeaderBoard').doc(uid).update({
         leaderBoardScore: score,
-        userName: snapshot[userName] ?? '',
+        userName: snapshot['user_name'] ?? '',
         userPhoto: snapshot[userPhoto]
       });
     } else {
       await FirebaseFirestore.instance.collection('LeaderBoard').doc(uid).set({
         leaderBoardScore: score,
-        userName: snapshot[userName] ?? '',
+        userName: snapshot['user_name'] ?? '',
         userPhoto: snapshot[userPhoto]
       });
     }
@@ -107,17 +107,20 @@ class FirebaseFirestoreData {
   static Future<List<Map<String, dynamic>>> getLeaderBoardData() async {
     // Get a reference to the collection
     // ignore: non_constant_identifier_names
-    CollectionReference leaderBoard =
-        FirebaseFirestore.instance.collection('LeaderBoard');
-
-    // Get all documents in the collection
-    QuerySnapshot querySnapshot = await leaderBoard.get();
-
-    // Convert each document to a map and add it to a list
+    final db = FirebaseFirestore.instance;
     List<Map<String, dynamic>> data = [];
-    for (var doc in querySnapshot.docs) {
-      data.add(doc.data() as Map<String, dynamic>);
-    }
+    // Convert each document to a map and add it to a list
+    db.collection("LeaderBoard").get().then(
+      (querySnapshot) {
+        print("Successfully completed");
+        for (var docSnapshot in querySnapshot.docs) {
+          print('${docSnapshot.id} => ${docSnapshot.data()}');
+          data.add(docSnapshot.data());
+          print(data);
+        }
+      },
+      onError: (e) => print("Error completing: $e"),
+    );
 
     // Return the list of maps
     return data;

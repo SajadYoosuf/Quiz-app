@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:quiz_app/View/achievements_display_screen.dart';
-import 'package:quiz_app/View/score_display_page.dart';
+import 'package:quiz_app/View/quiz_history_screen.dart';
 import 'package:quiz_app/ViewModel/RouteObserver/observ_utils.dart';
 import 'package:quiz_app/ViewModel/profile_page_functions.dart';
 import 'package:quiz_app/Widget/navigation_widget.dart';
@@ -35,8 +35,15 @@ class _ProfileScreenState extends State<ProfileScreen> with RouteAware {
   }
 
   @override
+  void dispose() {
+    ObserverUtils.routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
   void didPopNext() {
-    print("Hey previous route is now popped!!");
+    print('calling the route');
+    Provider.of<ProfilePageFunctions>(context, listen: false).refreshVaribles();
   }
 
   @override
@@ -241,7 +248,7 @@ class _ProfileScreenState extends State<ProfileScreen> with RouteAware {
                   ),
                 ),
                 profilePageButtons(context, 'View Quiz History', Colors.white,
-                    const ScoreDisplayPage(), Colors.black, 250),
+                    const QuizHistoryScreen(), Colors.black, 250),
                 const SizedBox(
                   height: 10,
                 ),

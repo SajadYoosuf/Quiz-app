@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text("Hi, ${homePage.userName ?? ''}",
                     style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 25,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold)),
               ),
               const Align(

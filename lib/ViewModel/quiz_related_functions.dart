@@ -258,41 +258,33 @@ class QuizPageFunctions extends ChangeNotifier {
     localStorage.reciveBoolList();
     print(localStorage.storingAchievementState);
     List<QuizHistory> quizHistory = localStorage.recieveDataFromHive();
-    AlertDialogs alertDialogs = AlertDialogs();
     if (!localStorage.storingAchievementState[0]) {
       if (localStorage.quizHistory.length == 1) {
-        localStorage.storingAchievementState[0] = true;
-        return alertDialogs.alertDialogMaking(context, achievementMessages[0]!);
+        return _unlockAchievement(0, context);
       }
     } else if (!localStorage.storingAchievementState[1]) {
       if (quizHistory.length == 5) {
-        localStorage.storingAchievementState[1] = true;
-        return alertDialogs.alertDialogMaking(context, achievementMessages[1]!);
+        return _unlockAchievement(1, context);
       }
     } else if (!localStorage.storingAchievementState[2]) {
       if (quizHistory.length == 10) {
-        localStorage.storingAchievementState[2] = true;
-        return alertDialogs.alertDialogMaking(context, achievementMessages[2]!);
+        return _unlockAchievement(2, context);
       }
     } else if (!localStorage.storingAchievementState[3]) {
       if (quizHistory.length == 10) {
-        localStorage.storingAchievementState[3] = true;
-        return alertDialogs.alertDialogMaking(context, achievementMessages[3]!);
+        return _unlockAchievement(3, context);
       }
     } else if (!localStorage.storingAchievementState[4]) {
       if (quizHistory.length == 50) {
-        localStorage.storingAchievementState[4] = true;
-        return alertDialogs.alertDialogMaking(context, achievementMessages[4]!);
+        return _unlockAchievement(4, context);
       }
     } else if (!localStorage.storingAchievementState[5]) {
       if (quizHistory.length == 100) {
-        localStorage.storingAchievementState[5] = true;
-        return alertDialogs.alertDialogMaking(context, achievementMessages[5]!);
+        return _unlockAchievement(5, context);
       }
     } else if (!localStorage.storingAchievementState[6]) {
       if (quizHistory.length == 200) {
-        localStorage.storingAchievementState[6] = true;
-        return alertDialogs.alertDialogMaking(context, achievementMessages[6]!);
+        return _unlockAchievement(6, context);
       }
     } else if (!localStorage.storingAchievementState[7]) {
       for (var i = 0; i < quizHistory.length;) {
@@ -302,35 +294,26 @@ class QuizPageFunctions extends ChangeNotifier {
           attemptForADay++;
         }
         if (attemptForADay == 10) {
-          localStorage.storingAchievementState[7] = true;
-
-          return alertDialogs.alertDialogMaking(
-              context, achievementMessages[7]!);
+          return _unlockAchievement(7, context);
         }
         break;
       }
     } else if (!localStorage.storingAchievementState[8]) {
       for (var i = 0; i < quizHistory.length; i++) {
         if (quizHistory[i].timeHistory! <= 30) {
-          localStorage.storingAchievementState[8] = true;
-          return alertDialogs.alertDialogMaking(
-              context, achievementMessages[8]!);
+          return _unlockAchievement(8, context);
         }
       }
     } else if (!localStorage.storingAchievementState[9]) {
       for (var i = 0; i < quizHistory.length; i++) {
         if (quizHistory[i].scoreHistory! == 10) {
-          localStorage.storingAchievementState[9] = true;
-          return alertDialogs.alertDialogMaking(
-              context, achievementMessages[9]!);
+          return _unlockAchievement(9, context);
         }
       }
     } else if (!localStorage.storingAchievementState[10]) {
       for (var i = 0; i < quizHistory.length; i++) {
         if (quizHistory[i].scoreHistory! == 9) {
-          localStorage.storingAchievementState[10] = true;
-          return alertDialogs.alertDialogMaking(
-              context, achievementMessages[10]!);
+          return _unlockAchievement(10, context);
         }
       }
     } else if (!localStorage.storingAchievementState[11]) {
@@ -339,10 +322,7 @@ class QuizPageFunctions extends ChangeNotifier {
             quizHistory[i + 1].cateogryHistory) {
           attemptForADay++;
           if (attemptForADay == CategoryDetails.categoryDetails.length) {
-            localStorage.storingAchievementState[11] = true;
-
-            return alertDialogs.alertDialogMaking(
-                context, achievementMessages[11]!);
+            return _unlockAchievement(11, context);
           }
         }
       }
@@ -350,25 +330,30 @@ class QuizPageFunctions extends ChangeNotifier {
       for (var i = 0; i < quizHistory.length; i++) {
         attemptForADay += quizHistory[i].scoreHistory!;
         if (attemptForADay >= 5) {
-          localStorage.storingAchievementState[12] = true;
-
-          return alertDialogs.alertDialogMaking(
-              context, achievementMessages[12]!);
+          return _unlockAchievement(12, context);
         }
       }
     } else if (!localStorage.storingAchievementState[13]) {
-      localStorage.storingAchievementState[13] = true;
-      return alertDialogs.alertDialogMaking(context, achievementMessages[13]!);
+      return _unlockAchievement(13, context);
     } else if (!localStorage.storingAchievementState[14]) {
       for (var i = 0; i < quizHistory.length; i++) {
         if (quizHistory[i].scoreHistory! == 1000) {
-          localStorage.storingAchievementState[14] = true;
-          return alertDialogs.alertDialogMaking(
-              context, achievementMessages[14]!);
+          return _unlockAchievement(14, context);
         }
       }
     }
+  }
+
+  Future<void> _unlockAchievement(int index, BuildContext context) async {
+    LocalStorageProvider localStorage = LocalStorageProvider();
+
+    localStorage.reciveBoolList();
     print(localStorage.storingAchievementState);
-    localStorage.storingBoolList(localStorage.storingAchievementState);
+    AlertDialogs alertDialogs = AlertDialogs();
+    localStorage.storingAchievementState[index] = true;
+    await localStorage.storingBoolList(localStorage.storingAchievementState);
+    quizIsActivated = false;
+    // ignore: use_build_context_synchronously
+    return alertDialogs.alertDialogMaking(context, achievementMessages[index]!);
   }
 }
