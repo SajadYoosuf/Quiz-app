@@ -1,14 +1,35 @@
+<<<<<<< HEAD
     <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
         android:label="Quizify"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
             <activity
+=======
+
+    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.quizes_app">
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:label="Mindspark"
+        android:name="${applicationName}"
+        android:enableOnBackInvokedCallback="true" 
+        android:theme="@style/LaunchTheme"
+        android:icon="@mipmap/launcher_icon">
+            <activity
+            android:requestLegacyExternalStorage="true"
+>>>>>>> ee6710f (Initial commit)
                 android:name=".MainActivity"
                 android:exported="true"
                 android:launchMode="singleTop"
                 android:taskAffinity=""
+<<<<<<< HEAD
                 android:theme="@style/LaunchTheme"
+=======
+                android:theme="@style/NormalTheme"
+>>>>>>> ee6710f (Initial commit)
                 android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
                 android:hardwareAccelerated="true"
                 android:windowSoftInputMode="adjustResize">
@@ -23,11 +44,43 @@
             <meta-data
                 android:name="flutterEmbedding"
                 android:value="2" />
+<<<<<<< HEAD
         </application>
         <queries>
+=======
+                <provider
+    android:name="androidx.core.content.FileProvider"
+    android:authorities="${applicationId}.fileprovider"
+    android:exported="false"
+    android:grantUriPermissions="true">
+    <meta-data
+        android:name="android.support.FILE_PROVIDER_PATHS"
+        android:resource="@xml/filepaths" />
+</provider>
+        </application>
+        <queries>
+        <!-- Query for Facebook -->
+        <package android:name="com.facebook.katana" />
+        <!-- Query for X -->
+        <package android:name="com.twitter.android" />
+        <!-- Query for LinkedIn -->
+        <package android:name="com.linkedin.android" />
+        <!-- Query for Reddit -->
+        <package android:name="com.reddit.frontpage" />
+        <!-- Query for WhatsApp -->
+        <package android:name="com.whatsapp" />
+        <!-- Query for Telegram -->
+        <package android:name="org.telegram.messenger" />
+                <package android:name="com.instagram.android" />
+
+>>>>>>> ee6710f (Initial commit)
             <intent>
                 <action android:name="android.intent.action.PROCESS_TEXT" />
                 <data android:mimeType="text/plain" />
             </intent>
         </queries>
+<<<<<<< HEAD
     </manifest>
+=======
+    </manifest>
+>>>>>>> ee6710f (Initial commit)

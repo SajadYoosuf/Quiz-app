@@ -1,0 +1,22 @@
+List<String> apiUrls = [
+  'https://opentdb.com/api.php?amount=30&category=9',
+  'https://opentdb.com/api.php?amount=30&category=10',
+  'https://opentdb.com/api.php?amount=30&category=11',
+  'https://opentdb.com/api.php?amount=30&category=12',
+  'https://opentdb.com/api.php?amount=30&category=15',
+  'https://opentdb.com/api.php?amount=30&category=16',
+  'https://opentdb.com/api.php?amount=30&category=17',
+  'https://opentdb.com/api.php?amount=30&category=18',
+  'https://opentdb.com/api.php?amount=30&category=19',
+  'https://opentdb.com/api.php?amount=30&category=20',
+  'https://opentdb.com/api.php?amount=30&category=21',
+  'https://opentdb.com/api.php?amount=30&category=22',
+  'https://opentdb.com/api.php?amount=30&category=23',
+  'https://opentdb.com/api.php?amount=30&category=24',
+  'https://opentdb.com/api.php?amount=30&category=25',
+  'https://opentdb.com/api.php?amount=30&category=27',
+  'https://opentdb.com/api.php?amount=30&category=28',
+  'https://opentdb.com/api.php?amount=30&category=29',
+  'https://opentdb.com/api.php?amount=30&category=30',
+  'https://opentdb.com/api.php?amount=30&category=31'
+];

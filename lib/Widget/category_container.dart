@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../Model/quiz_full_data.dart';
-import '../../ViewModel/quiz_page_functions.dart';
-import '../quiz_page.dart';
+import '../ViewModel/quiz_related_functions.dart';
+import '../View/quiz_screen.dart';
 
 Widget categoryContainer(
   BuildContext context,
   String categoryName,
   String categoryImage,
-  Color containerColor,
-  List<QuizFullData> quizFullData,
 ) {
   var functions = Provider.of<QuizPageFunctions>(context);
   var size = MediaQuery.of(context).size;
@@ -18,20 +15,20 @@ Widget categoryContainer(
   var hieght = size.height;
   return GestureDetector(
     onTap: () {
-      functions.resetVariables(quizFullData);
+      // functions.resetVariables(quizFullData);
 
-      functions.displayCountDownTimer(context);
+      // functions.displayCountDownTimer(context);
 
-      functions.recieveDataFromSharedPreference();
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => QuizPage(
-            categoryName: categoryName,
-            quizFullData: quizFullData,
-          ),
-        ),
-      );
+      // functions.recieveDataFromSharedPreference();
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => QuizPage(
+      //       categoryName: categoryName,
+      //       quizFullData: quizFullData,
+      //     ),
+      //   ),
+      // );
     },
     // ignore: use_build_context_synchronously
 
@@ -39,7 +36,7 @@ Widget categoryContainer(
       height: hieght * 0.19,
       width: width * 0.80,
       decoration: BoxDecoration(
-          color: containerColor, borderRadius: BorderRadius.circular(30)),
+          color: Colors.purple, borderRadius: BorderRadius.circular(30)),
       child: Column(
         children: [
           // const SizedBox(

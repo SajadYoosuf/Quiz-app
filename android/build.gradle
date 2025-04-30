@@ -7,6 +7,20 @@ allprojects {
 
 rootProject.buildDir = "../build"
 subprojects {
+<<<<<<< HEAD
+=======
+    afterEvaluate { project ->
+        if (project.hasProperty('android')) {
+            project.android {
+                namespace = namespace ?: project.group
+                compileSdkVersion 34
+buildToolsVersion "28.0.3"
+            }
+        }
+    }
+}
+subprojects {
+>>>>>>> ee6710f (Initial commit)
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
 subprojects {

@@ -1,6 +1,11 @@
 {
+<<<<<<< HEAD
     "name": "quizes_app",
     "short_name": "quizes_app",
+=======
+    "name": "quiz_app",
+    "short_name": "quiz_app",
+>>>>>>> ee6710f (Initial commit)
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

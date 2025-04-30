@@ -90,12 +90,21 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
+<<<<<<< HEAD
             VALUE "FileDescription", "quizes_app" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "quizes_app" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
             VALUE "OriginalFilename", "quizes_app.exe" "\0"
             VALUE "ProductName", "quizes_app" "\0"
+=======
+            VALUE "FileDescription", "quiz_app" "\0"
+            VALUE "FileVersion", VERSION_AS_STRING "\0"
+            VALUE "InternalName", "quiz_app" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2025 com.example. All rights reserved." "\0"
+            VALUE "OriginalFilename", "quiz_app.exe" "\0"
+            VALUE "ProductName", "quiz_app" "\0"
+>>>>>>> ee6710f (Initial commit)
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
