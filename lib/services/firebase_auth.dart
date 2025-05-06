@@ -1,10 +1,12 @@
 import 'package:quiz_app/services/firebase_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:quiz_app/utilities/constant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FirebaseAuthentication {
+  static User? get user => FirebaseAuth.instance.currentUser;
+
   static Future<String> loginWithEmailAndPassword(
       String emailAddress, String password) async {
     try {
@@ -12,42 +14,50 @@ class FirebaseAuthentication {
         email: emailAddress,
         password: password,
       );
+      return 'successfully login';
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        return 'No user found for that email.';
-      } else if (e.code == 'wrong-password') {
-        return ' you enterd Wrong password ';
+      switch (e.code) {
+        case 'user-not-found':
+          return 'No user found for that email.';
+        case 'wrong-password':
+          return 'You entered the wrong password.';
+        case 'invalid-email':
+          return 'The email address is not valid.';
+        case 'user-disabled':
+          return 'This user account has been disabled.';
+        default:
+          return 'Authentication failed: ${e.message}';
       }
+    } catch (e) {
+      return 'An unexpected error occurred: ${e.toString()}';
     }
-    return '';
   }
 
   static Future<String> registerWithEmailAndPassword(
       String emailAddress, String password) async {
     try {
-      await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailAddress,
         password: password,
-      )
-          .then((_) async {
-        return 'account created succesfully';
-      });
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        // ignore: use_build_context_synchronously
-        return 'The password provided is too weak.';
+      );
 
-        // print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        // ignore: use_build_context_synchronously
-        return 'The account already exists for that email.';
+      return 'account created succesfully';
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'weak-password':
+          return 'The password provided is too weak.';
+        case 'email-already-in-use':
+          return 'The account already exists for that email.';
+        case 'invalid-email':
+          return 'The email address is not valid.';
+        case 'operation-not-allowed':
+          return 'Email/password accounts are not enabled.';
+        default:
+          return 'Registration failed: ${e.message}';
       }
-      return '';
     } catch (e) {
-      return e.toString();
+      return 'An unexpected error occurred: ${e.toString()}';
     }
-    return '';
   }
 
   static Future<String> signInWithGoogle() async {
@@ -59,10 +69,14 @@ class FirebaseAuthentication {
     try {
       // Trigger the sign-in flow
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      // User canceled the sign-in flow
+      if (googleUser == null) {
+        return 'Sign-in was canceled';
+      }
 
       // Obtain auth details from the Sign-in
       final GoogleSignInAuthentication googleAuth =
-          await googleUser!.authentication;
+          await googleUser.authentication;
 
       // Create a new credential
       final OAuthCredential credential = GoogleAuthProvider.credential(
@@ -72,16 +86,23 @@ class FirebaseAuthentication {
 
       // Sign in to Firebase with the credential
 
-      final user = await FirebaseAuth.instance.signInWithCredential(credential);
-      FirebaseFirestoreData.addUser(
-          fullName: user.user!.displayName!,
-          email: user.user!.email!,
-          password: '',
-          photoUrl: user.user!.photoURL!);
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setString('user_name', user.user!.displayName!);
-      prefs.setString('profile_photo', user.user!.photoURL.toString());
-      // Do something with the user
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      // Save user data to Firestore
+      if (userCredential.user != null) {
+        final user = userCredential.user!;
+        await FirebaseFirestoreData.addUser(
+          user.displayName ?? 'User',
+          user.email ?? '',
+          '',
+          user.photoURL ?? '',
+        );
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString(
+            FirebaseKeys.userName, user.displayName ?? 'User');
+      }
+
       return 'Successfully completed';
     } catch (e) {
       return e.toString();
@@ -93,34 +114,37 @@ class FirebaseAuthentication {
 
     try {
       if (await googleSignIn.isSignedIn()) {
-        print('google sign in');
         await googleSignIn.signOut();
-
-        return 'Succesfully sign out';
-      } else {
-        await FirebaseAuth.instance.signOut().then((onValue) async {
-          // ignore: use_build_context_synchronously
-          return 'Succesfully sign out';
-        });
       }
+
+      await FirebaseAuth.instance.signOut();
+      return 'Succesfully sign out';
     } catch (e) {
-      return e.toString();
+      return 'Error signing out${e.toString()}';
     }
-    return '';
   }
 
   static Future<String> resetPassword(String newPassword) async {
-    final user = FirebaseAuth.instance.currentUser;
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        return 'No user is currently signed in';
+      }
 
-    user?.updatePassword(newPassword).then((onValue) {
+      await user.updatePassword(newPassword);
       //Success, do something
       return 'Successfully changed your password';
-    }).catchError((error) {
-      //Error, show something
-      // ignore: invalid_return_type_for_catch_error
-      return error.toString;
-    });
-
-    return '';
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'weak-password':
+          return 'The password provided is too weak.';
+        case 'requires-recent-login':
+          return 'This operation is sensitive and requires recent authentication. Please log in again.';
+        default:
+          return 'Password reset failed: ${e.message}';
+      }
+    } catch (e) {
+      return 'An unexpected error occurred: ${e.toString()}';
+    }
   }
 }

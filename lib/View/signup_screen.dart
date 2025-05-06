@@ -1,138 +1,97 @@
-import 'package:quiz_app/ViewModel/signup_provider.dart';
-import 'package:quiz_app/Widget/textField.dart';
-import 'package:quiz_app/utilities/images.dart';
+import 'package:quiz_app/ViewModel/signup_screen_provider.dart';
+import 'package:quiz_app/Widget/build_header_logo.dart';
+import 'package:quiz_app/Widget/custom_action_button.dart';
+import 'package:quiz_app/Widget/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quiz_app/utilities/constant.dart';
 
 class SignUpScreen extends StatelessWidget {
-  SignUpScreen({super.key});
-  final _formKey = GlobalKey<FormState>();
+  const SignUpScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    var width = size.width;
-    var hieght = size.height;
+    MediaQueryScreenSizes.int(context);
     final signUpPage = Provider.of<SignUpPageProvider>(context);
+
     return Scaffold(
-      backgroundColor: const Color(0xFF1f1147),
+      backgroundColor: AppColors.primaryAppColor,
       body: SingleChildScrollView(
         child: Form(
-          key: _formKey,
+          key: signUpPage.signUpPageFormKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                  padding: const EdgeInsets.only(top: 50, left: 0),
-                  width: width,
-                  height: hieght * 0.30,
-                  decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 44, 23, 96),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(130),
-                      bottomRight: Radius.circular(130),
-                    ),
-                  ),
-                  child: Image.asset(
-                    'assets/images/final_logo.png',
-                    width: 100,
-                    height: 30,
-                    fit: BoxFit.contain,
+              buildHeaderLogo(MediaQueryScreenSizes.screenWidth,
+                  MediaQueryScreenSizes.screenheight),
+              SizedBox(
+                  height: MediaQueryScreenSizes.screenheight *
+                      0.03), // Adjust space between sections
+              SizedBox(
+                  width: MediaQueryScreenSizes.screenWidth * 0.90,
+                  height: MediaQueryScreenSizes.screenheight * 0.08,
+                  child: buildCustomTextField(
+                      context: context,
+                      title: 'UserName',
+                      leftIcon: AppIcons.nameIcon,
+                      controller: signUpPage.nameController,
+                      validator: (value) =>
+                          signUpPage.userNameValidator(value!))),
+              SizedBox(
+                  width: MediaQueryScreenSizes.screenWidth * 0.90,
+                  height: MediaQueryScreenSizes.screenheight * 0.08,
+                  child: buildCustomTextField(
+                      context: context,
+                      title: 'Email',
+                      leftIcon: AppIcons.emailIcon,
+                      controller: signUpPage.emailController,
+                      validator: (value) => signUpPage.emailValidator(value!))),
+              SizedBox(
+                width: MediaQueryScreenSizes.screenWidth * 0.90,
+                height: MediaQueryScreenSizes.screenheight * 0.08,
+                child: buildCustomTextField(
+                  context: context,
+                  title: 'Password',
+                  leftIcon: AppIcons.passwordIcon,
+                  controller: signUpPage.passwordController,
+                  validator: (value) => signUpPage.passwordValidator(value!),
+                  onVisibilityToggle: () =>
+                      signUpPage.togglePasswordVisibility('Password'),
+                ),
+              ),
+              SizedBox(
+                  width: MediaQueryScreenSizes.screenWidth * 0.90,
+                  height: MediaQueryScreenSizes.screenheight * 0.08,
+                  child: buildCustomTextField(
+                    context: context,
+                    title: 'Repeat Password',
+                    leftIcon: AppIcons.rePasswordIcon,
+                    controller: signUpPage.repeatPasswordController,
+                    validator: (value) =>
+                        signUpPage.repeatPasswordValidator(value!),
+                    onVisibilityToggle: () =>
+                        signUpPage.togglePasswordVisibility('Repeat Password'),
                   )),
-              const SizedBox(
-                height: 30,
-              ),
               SizedBox(
-                  width: width * 0.90,
-                  height: 70,
-                  child: textField(
-                      context,
-                      'UserName',
-                      const Icon(
-                        Icons.person,
-                        color: Colors.white,
-                      ),
-                      false,
-                      false,
-                      signUpPage.nameController,
-                      2)),
-              SizedBox(
-                  width: width * 0.90,
-                  height: 70,
-                  child: textField(
-                      context,
-                      'Email',
-                      const Icon(
-                        Icons.email,
-                        color: Colors.white,
-                      ),
-                      false,
-                      false,
-                      signUpPage.emailController,
-                      2)),
-              SizedBox(
-                  width: width * 0.90,
-                  height: 70,
-                  child: textField(
-                      context,
-                      'Password',
-                      const Icon(
-                        Icons.password,
-                        color: Colors.white,
-                      ),
-                      true,
-                      signUpPage.passCheck,
-                      signUpPage.passwordController,
-                      2)),
-              SizedBox(
-                  width: width * 0.90,
-                  height: 70,
-                  child: textField(
-                      context,
-                      'Repeat Password',
-                      const Icon(
-                        Icons.key,
-                        color: Colors.white,
-                      ),
-                      true,
-                      signUpPage.repeatPassCheck,
-                      signUpPage.repeatPasswordController,
-                      2)),
-              const SizedBox(
-                height: 20,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    // If the form is valid, display a snackbar. In the real world,
-                    // you'd often call a server or save the information in a database.
-                    print(signUpPage.emailController.text);
-                    signUpPage.registerNewUserWithEmailAndPassword(
+                  height: MediaQueryScreenSizes.screenheight *
+                      0.02), // Adjust space between form and button
+              CustomActionButton(
+                  text: 'Sign up',
+                  onPressed: () {
+                    if (signUpPage.signUpPageFormKey.currentState!.validate()) {
+                      signUpPage.registerNewUserWithEmailAndPassword(
                         signUpPage.emailController.text,
                         signUpPage.passwordController.text,
                         signUpPage.nameController.text,
-                        context);
-                  }
-                },
-                child: const Text(
-                  'Sign up',
-                  style: TextStyle(color: Colors.white),
-                ),
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                        20), // Adjust the radius as needed
-                  ),
-                  side: BorderSide(
-                      color: Colors.white,
-                      width: 2), // Set the border color and width
-
-                  backgroundColor: Colors.black,
-                  minimumSize: Size(width * 0.70, 50),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
+                        context,
+                      );
+                    }
+                  },
+                  width: MediaQueryScreenSizes.screenWidth,
+                  height: MediaQueryScreenSizes.screenheight),
+              SizedBox(
+                  height: MediaQueryScreenSizes.screenheight *
+                      0.02), // Adjust space after sign up button
               const Align(
                 alignment: Alignment.center,
                 child: Text(
@@ -140,30 +99,20 @@ class SignUpScreen extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  'Log in',
-                  style: TextStyle(color: Colors.white),
-                ),
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                        20), // Adjust the radius as needed
-                  ),
-                  side: BorderSide(
-                      color: Colors.white,
-                      width: 2), // Set the border color and width
-
-                  backgroundColor: Colors.black,
-                  minimumSize: Size(width * 0.70, 50),
-                ),
-              ),
+              SizedBox(
+                  height: MediaQueryScreenSizes.screenheight *
+                      0.02), // Adjust space before login button
+              CustomActionButton(
+                  text: 'Log in',
+                  onPressed: () {
+                    signUpPage.emailController.text = '';
+                    signUpPage.passwordController.text = '';
+                    signUpPage.nameController.text = '';
+                    signUpPage.repeatPasswordController.text = '';
+                    Navigator.pop(context);
+                  },
+                  width: MediaQueryScreenSizes.screenWidth,
+                  height: MediaQueryScreenSizes.screenheight),
             ],
           ),
         ),

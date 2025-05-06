@@ -1,91 +1,92 @@
-import 'package:quiz_app/ViewModel/reset_password_page.dart';
-import 'package:quiz_app/ViewModel/signup_provider.dart';
-import 'package:quiz_app/Widget/textField.dart';
+import 'package:quiz_app/ViewModel/forgot_password_screen_provider.dart';
+import 'package:quiz_app/Widget/custom_action_button.dart';
+import 'package:quiz_app/Widget/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quiz_app/utilities/constant.dart';
 
 class ForgottPasswrdScreen extends StatelessWidget {
-  ForgottPasswrdScreen({super.key});
-  final _formKey = GlobalKey<FormState>();
+  const ForgottPasswrdScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final resetPassword = Provider.of<ResetPasswordPage>(context);
-    final reset = Provider.of<SignUpPageProvider>(context);
-    var width = MediaQuery.of(context).size.width;
+    final forgotPasswordProvider =
+        Provider.of<ForgotPasswordScreenProvider>(context);
+
+    MediaQueryScreenSizes.int(context);
+
     return Scaffold(
-      backgroundColor: const Color(0xFF1f1147),
+      backgroundColor: AppColors.primaryAppColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1f1147),
+        backgroundColor: AppColors.primaryAppColor,
         leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            )),
-        title: const Text(
-          'Forgot Password',
-          style: TextStyle(color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(
+            Icons.arrow_back,
+            color: AppColors.whiteColor,
+            size: MediaQueryScreenSizes.screenWidth * 0.065,
+          ),
         ),
+        title: const Text('Forgot Password', style: AppStyles.headingStyle),
       ),
       body: Form(
-        key: _formKey,
+        key: forgotPasswordProvider.forgotPasswordFormKey,
         child: Padding(
-          padding: const EdgeInsets.only(left: 10, top: 50),
+          padding: EdgeInsets.symmetric(
+              horizontal: MediaQueryScreenSizes.screenWidth * 0.05,
+              vertical: MediaQueryScreenSizes.screenheight * 0.05),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
-                  width: width * 0.90,
-                  height: 70,
-                  child: textField(
-                      context,
-                      'Password',
-                      const Icon(
-                        Icons.password,
-                        color: Colors.white,
-                      ),
-                      true,
-                      reset.passCheck,
-                      resetPassword.newPassController,
-                      2)),
+                  width: MediaQueryScreenSizes.screenWidth * 0.90,
+                  height: MediaQueryScreenSizes.screenheight * 0.08,
+                  child: buildCustomTextField(
+                    context: context,
+                    title: 'Password',
+                    leftIcon: AppIcons.passwordIcon,
+                    controller: forgotPasswordProvider.newPassController,
+                    validator: (value) =>
+                        forgotPasswordProvider.passwordValidator(value!),
+                    isPassword: true,
+                    obscureText: forgotPasswordProvider.passwordCheck,
+                    onVisibilityToggle: () => forgotPasswordProvider
+                        .togglePasswordVisiblity('Password'),
+                  )),
+              SizedBox(height: MediaQueryScreenSizes.screenheight * 0.03),
               SizedBox(
-                  width: width * 0.90,
-                  height: 70,
-                  child: textField(
-                      context,
-                      'Repeat Password',
-                      const Icon(
-                        Icons.key,
-                        color: Colors.white,
-                      ),
-                      true,
-                      reset.repeatPassCheck,
-                      resetPassword.repeatPassController,
-                      2)),
+                  width: MediaQueryScreenSizes.screenWidth * 0.90,
+                  height: MediaQueryScreenSizes.screenheight * 0.08,
+                  child: buildCustomTextField(
+                    context: context,
+                    title: 'Repeat Password',
+                    leftIcon: AppIcons.rePasswordIcon,
+                    controller: forgotPasswordProvider.repeatPassController,
+                    validator: (value) =>
+                        forgotPasswordProvider.repeatPasswordValidator(value!),
+                    isPassword: true,
+                    obscureText: forgotPasswordProvider.repeatPassCheck,
+                    onVisibilityToggle: () => forgotPasswordProvider
+                        .togglePasswordVisiblity('Repeat Password'),
+                  )),
+              SizedBox(height: MediaQueryScreenSizes.screenheight * 0.05),
               SizedBox(
-                width: width * 0.50,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          20), // Adjust the radius as needed
-                    ),
-                    side: const BorderSide(
-                        color: Colors.white,
-                        width: 2), // Set the border color and width
-                  ),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      resetPassword.resetPassword(
-                          resetPassword.repeatPassController.text, context);
-                    }
-                  },
-                  child: const Text(
-                    'Change Password',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
+                  width: MediaQueryScreenSizes.screenWidth * 0.5,
+                  height: MediaQueryScreenSizes.screenheight * 0.06,
+                  child: CustomActionButton(
+                      text: 'Change Password',
+                      onPressed: () {
+                        if (forgotPasswordProvider
+                            .forgotPasswordFormKey.currentState!
+                            .validate()) {
+                          forgotPasswordProvider.resetPassword(
+                            forgotPasswordProvider.repeatPassController.text,
+                            context,
+                          );
+                        }
+                      },
+                      width: MediaQueryScreenSizes.screenWidth,
+                      height: MediaQueryScreenSizes.screenheight)),
             ],
           ),
         ),

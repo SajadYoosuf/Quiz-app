@@ -1,128 +1,136 @@
-import 'package:quiz_app/utilities/firebase_keys.dart';
+import 'package:quiz_app/utilities/constant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseFirestoreData {
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  static List<String> userData = [];
-  static Future<String?> addUser(
-      {required String fullName,
-      required String email,
-      required String password,
-      required String photoUrl}) async {
-    final usersData = FirebaseAuth.instance.currentUser;
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
+  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-    // final User? user = auth.currentUser;
-    final uid = usersData?.uid;
+  static User? get _currentUser => FirebaseAuth.instance.currentUser;
+  static Future<String?> addUser(
+      String fullName, String email, String password, String photoUrl) async {
+    if (_currentUser == null) {
+      return 'No authenticated user found';
+    }
+
     try {
-      await users.doc(uid).set({
-        userName: fullName,
-        userEmail: email,
-        userPassword: password,
-        userPhoto: photoUrl
+      await _firestore.collection('users').doc(_currentUser!.uid).set({
+        FirebaseKeys.userName: fullName,
+        FirebaseKeys.userEmail: email,
+        FirebaseKeys.userPassword: password,
+        FirebaseKeys.userPhoto: photoUrl,
+        'createdAt': FieldValue.serverTimestamp(),
       });
-      return 'success';
+      return 'User data saved successfully';
     } catch (e) {
-      return 'Error adding user';
+      return 'Error adding user: ${e.toString()}';
     }
   }
 
-  static Future<String?> getUser() async {
-    print('started  calling the firebase ');
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-    final auth = FirebaseAuth.instance;
+  static Future<Map<String, dynamic>> getUser() async {
+    if (_currentUser == null) {
+      return {'error': 'No authenticated user found'};
+    }
 
     try {
-      final uid = auth.currentUser!.uid;
-      final snapshot = await users.doc(uid).get();
-
-      userData.add(snapshot[userEmail]);
-      userData.add(snapshot['user_name']);
-      userData.add(snapshot[userPassword] ?? 'password');
-      userData.add(snapshot[userPhoto]);
-      if (userData.isNotEmpty) {
-        return 'successfully fetched userData';
+      final snapshot =
+          await _firestore.collection('users').doc(_currentUser!.uid).get();
+      if (!snapshot.exists) {
+        return {'error': 'no user data found'};
       }
+      return snapshot.data() ?? {'error': 'No data available'};
+
       // final User? user = auth.currentUser;
     } catch (e) {
-      return e.toString();
+      return {'error': e.toString()};
     }
-    return null;
   }
 
   static Future<String> updateUserData(String key, String value) async {
-    final user = FirebaseAuth.instance.currentUser;
-    final uid = user?.uid;
+    if (_currentUser == null) {
+      return 'No authenticated user found';
+    }
 
     try {
-      FirebaseFirestore.instance
+      await _firestore
           .collection('users')
-          .doc(uid)
+          .doc(_currentUser!.uid)
           .update({key: value});
-      return 'Successfully updated';
+      return 'Data updated successfully';
     } catch (e) {
-      return 'some trouble affeting uploading time ';
+      return 'Error updating data: ${e.toString()}';
     }
   }
 
-  static Future<Null> addUserLeaderboardInfo({
+  static Future<String> updateLeaderboardScore({
     required String score,
   }) async {
-    final user = FirebaseAuth.instance.currentUser;
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    if (_currentUser == null) {
+      return 'No authenticated user found';
+    }
+    try {
+      final userSnapshot =
+          await _firestore.collection('users').doc(_currentUser!.uid).get();
+      if (!userSnapshot.exists) {
+        return 'User data not found';
+      }
+      // Get current leaderboard data
+      final leaderboardRef =
+          _firestore.collection('LeaderBoard').doc(_currentUser!.uid);
+      final leaderboardSnapshot = await leaderboardRef.get();
+      // Extract user data for leaderboard
+      final userData = userSnapshot.data() ?? {};
+      final leaderboardData = {
+        FirebaseKeys.userScore: score,
+        FirebaseKeys.userName: userData[FirebaseKeys.userName] ?? 'Unknown',
+        FirebaseKeys.userPhoto: userData[FirebaseKeys.userPhoto] ?? '',
+        'updatedAt': FieldValue.serverTimestamp(),
+      };
 
-    final uid = user?.uid;
-    final snapshot = await users.doc(uid).get();
-    String userScore = await FirebaseFirestoreData.getLeaderBoardScore();
-    if (userScore.contains(RegExp(r'\d'))) {
-      FirebaseFirestore.instance.collection('LeaderBoard').doc(uid).update({
-        leaderBoardScore: score,
-        userName: snapshot['user_name'] ?? '',
-        userPhoto: snapshot[userPhoto]
-      });
-    } else {
-      await FirebaseFirestore.instance.collection('LeaderBoard').doc(uid).set({
-        leaderBoardScore: score,
-        userName: snapshot['user_name'] ?? '',
-        userPhoto: snapshot[userPhoto]
-      });
+      if (leaderboardSnapshot.exists) {
+        await leaderboardRef.update(leaderboardData);
+        return 'Leaderboard score updated';
+      } else {
+        await leaderboardRef.set(leaderboardData);
+        return 'Added to leaderboard';
+      }
+    } catch (e) {
+      return 'Error updating leaderboard: ${e.toString()}';
     }
   }
 
   static Future<String> getLeaderBoardScore() async {
-    final user = FirebaseAuth.instance.currentUser;
-    CollectionReference leaderBoard =
-        FirebaseFirestore.instance.collection('LeaderBoard');
-
-    final uid = user?.uid;
+    if (_currentUser == null) {
+      return '0';
+    }
     try {
-      final snapshot = await leaderBoard.doc(uid).get();
-      return snapshot[leaderBoardScore];
+      final docSnapshot = await _firestore
+          .collection('LeaderBoard')
+          .doc(_currentUser!.uid)
+          .get();
+      if (docSnapshot.exists &&
+          docSnapshot.data()!.containsKey(FirebaseKeys.userScore)) {
+        return docSnapshot.data()![FirebaseKeys.userScore];
+      }
     } catch (e) {
       return e.toString();
     }
+    return '0';
   }
 
   static Future<List<Map<String, dynamic>>> getLeaderBoardData() async {
-    // Get a reference to the collection
-    // ignore: non_constant_identifier_names
-    final db = FirebaseFirestore.instance;
-    List<Map<String, dynamic>> data = [];
-    // Convert each document to a map and add it to a list
-    db.collection("LeaderBoard").get().then(
-      (querySnapshot) {
-        print("Successfully completed");
-        for (var docSnapshot in querySnapshot.docs) {
-          print('${docSnapshot.id} => ${docSnapshot.data()}');
-          data.add(docSnapshot.data());
-          print(data);
-        }
-      },
-      onError: (e) => print("Error completing: $e"),
-    );
-
-    // Return the list of maps
-    return data;
+    try {
+      List<Map<String, dynamic>> leaderboardData = [];
+      final querySnapshot = await _firestore
+          .collection("LeaderBoard")
+          .orderBy(FirebaseKeys.userScore, descending: true)
+          .limit(50) // Limit to top 100 scores for performance
+          .get();
+      for (var doc in querySnapshot.docs) {
+        leaderboardData.add(doc.data());
+      }
+      return leaderboardData;
+    } catch (e) {
+      return [];
+    }
   }
 }

@@ -1,214 +1,100 @@
-import 'package:quiz_app/View/forgott_passwrd_screen.dart';
-import 'package:quiz_app/View/signup_screen.dart';
-import 'package:quiz_app/ViewModel/login_page.dart';
-import 'package:quiz_app/ViewModel/reset_password_page.dart';
-import 'package:quiz_app/Widget/textField.dart';
-import 'package:quiz_app/utilities/images.dart';
+import 'package:quiz_app/ViewModel/login_screen_provider.dart';
+import 'package:quiz_app/Widget/build_action_button_with_image.dart';
+import 'package:quiz_app/Widget/build_header_logo.dart';
+import 'package:quiz_app/Widget/build_text_button.dart';
+import 'package:quiz_app/Widget/custom_action_button.dart';
+import 'package:quiz_app/Widget/custom_text_field.dart';
+import 'package:quiz_app/utilities/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
-  final _formKey = GlobalKey<FormState>();
+  const LoginScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    final authentication = Provider.of<LoginPageProvider>(context);
-    var size = MediaQuery.of(context).size;
-    var width = size.width;
-    var hieght = size.height;
+    final loginProvider = Provider.of<LoginPageProvider>(context);
+    MediaQueryScreenSizes.int(context);
+
     return Scaffold(
-      backgroundColor: const Color(0xFF1f1147),
+      backgroundColor: AppColors.primaryAppColor,
       body: SingleChildScrollView(
         child: Form(
-          key: _formKey,
+          key: loginProvider.loginPageFormKey,
           child: Column(
             children: [
-              Container(
-                  padding: const EdgeInsets.only(top: 50, left: 0),
-                  width: width,
-                  height: hieght * 0.30,
-                  decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 44, 23, 96),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(130),
-                      bottomRight: Radius.circular(130),
-                    ),
-                  ),
-                  child: Image.asset(
-                    'assets/images/final_logo.png',
-                    width: 100,
-                    height: 20,
-                    fit: BoxFit.contain,
+              buildHeaderLogo(MediaQueryScreenSizes.screenWidth,
+                  MediaQueryScreenSizes.screenheight),
+              SizedBox(height: MediaQueryScreenSizes.screenheight * 0.05),
+              SizedBox(
+                  width: MediaQueryScreenSizes.screenWidth * 0.90,
+                  height: MediaQueryScreenSizes.screenheight * 0.09,
+                  child: buildCustomTextField(
+                    context: context,
+                    title: 'Email',
+                    leftIcon: AppIcons.emailIcon,
+                    controller: loginProvider.emailController,
+                    validator: (value) => loginProvider.emailValidator(value!),
                   )),
-              const SizedBox(
-                height: 50,
-              ),
+              SizedBox(height: MediaQueryScreenSizes.screenheight * 0.01),
               SizedBox(
-                  width: width * 0.90,
-                  height: 70,
-                  child: textField(
-                      context,
-                      'Email',
-                      const Icon(
-                        Icons.email,
-                        color: Colors.white,
-                      ),
-                      false,
-                      false,
-                      authentication.emailController,
-                      1)),
-              const SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                  width: width * 0.90,
-                  height: 70,
-                  child: textField(
-                      context,
-                      'Password',
-                      const Icon(
-                        Icons.password,
-                        color: Colors.white,
-                      ),
-                      true,
-                      authentication.passCheck,
-                      authentication.passController,
-                      1)),
-              // SizedBox(
-              //   height: 5,
-              // ),
+                  width: MediaQueryScreenSizes.screenWidth * 0.90,
+                  height: MediaQueryScreenSizes.screenheight * 0.09,
+                  child: buildCustomTextField(
+                    context: context,
+                    title: 'Password',
+                    leftIcon: AppIcons.passwordIcon,
+                    controller: loginProvider.passController,
+                    validator: (value) =>
+                        loginProvider.passwordValidator(value!),
+                    obscureText: true,
+                    isPassword: loginProvider.passCheck,
+                    onVisibilityToggle: () =>
+                        loginProvider.togglePasswordVisiblity(),
+                  )),
               Padding(
-                padding: const EdgeInsets.only(left: 243),
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ForgottPasswrdScreen()));
-                  },
-                  child: const Text(
-                    'Password?',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
-              // SizedBox(
-              //   height: 20,
-              // ),
-              ElevatedButton(
+                  padding: EdgeInsets.only(
+                      left: MediaQueryScreenSizes.screenWidth * 0.60),
+                  child:
+                      buildTextButton(context, AppRoutes.reset, 'Password?')),
+              CustomActionButton(
+                text: 'Log in',
+                width: MediaQueryScreenSizes.screenWidth * 0.70,
+                height: MediaQueryScreenSizes.screenWidth * 0.07,
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    // If the form is valid, display a snackbar. In the real world,
-                    // you'd often call a server or save the information in a database.
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Processing Data')),
+                  if (loginProvider.loginPageFormKey.currentState!.validate()) {
+                    loginProvider.loginWithEmailAndPassword(
+                      loginProvider.emailController.text,
+                      loginProvider.passController.text,
+                      // ignore: use_build_context_synchronously
+                      context,
                     );
-                    Future.delayed(const Duration(seconds: 1)).then((_) {
-                      authentication.loginWithEmailAndPassword(
-                          authentication.emailController.text,
-                          authentication.passController.text,
-                          context);
-                    });
                   }
                 },
-                child: const Text(
-                  'Log in',
-                  style: TextStyle(color: Colors.white),
-                ),
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                        20), // Adjust the radius as needed
-                  ),
-                  side: const BorderSide(
-                      color: Colors.white,
-                      width: 2), // Set the border color and width
-
-                  backgroundColor: Colors.black,
-                  minimumSize: Size(width * 0.70, 50),
-                ),
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              SizedBox(height: MediaQueryScreenSizes.screenheight * 0.02),
               const Align(
                 alignment: Alignment.center,
-                child: Text(
-                  "Don't have an account?",
-                  style: TextStyle(color: Colors.white),
-                ),
+                child: Text("Don't have an account?",
+                    style: TextStyle(color: Colors.white)),
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => SignUpScreen()));
-                },
-                child: const Text(
-                  'Sign up',
-                  style: TextStyle(color: Colors.white),
-                ),
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                        20), // Adjust the radius as needed
-                  ),
-                  side: const BorderSide(
-                      color: Colors.white,
-                      width: 2), // Set the border color and width
-
-                  backgroundColor: Colors.black,
-                  minimumSize: Size(width * 0.70, 50),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const Align(
-                alignment: Alignment.center,
-                child: Text(
-                  "or",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              SizedBox(
-                width: width * 0.50,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          20), // Adjust the radius as needed
-                    ),
-                    side: const BorderSide(
-                        color: Colors.white,
-                        width: 2), // Set the border color and width
-                  ),
-                  onPressed: () async {
-                    authentication.signInWithGoogle(context).then((onValue) {});
+              SizedBox(height: MediaQueryScreenSizes.screenheight * 0.02),
+              CustomActionButton(
+                  text: 'Sign Up',
+                  onPressed: () {
+                    final authentication = context.read<LoginPageProvider>();
+                    authentication.emailController.text = '';
+                    authentication.passController.text = '';
+                    Navigator.pushNamed(context, AppRoutes.signup);
                   },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      const Text(
-                        'Sign in with ',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      Container(
-                        width: 30,
-                        height: 30,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                                image: AssetImage(google),
-                                fit: BoxFit.fitWidth)),
-                      ),
-                    ],
-                  ),
-                ),
+                  width: MediaQueryScreenSizes.screenWidth,
+                  height: MediaQueryScreenSizes.screenheight),
+              SizedBox(height: MediaQueryScreenSizes.screenheight * 0.02),
+              const Align(
+                alignment: Alignment.center,
+                child: Text("or", style: TextStyle(color: Colors.white)),
               ),
+              buildActionButtonWithImage(
+                  MediaQueryScreenSizes.screenWidth, context)
             ],
           ),
         ),

@@ -1,29 +1,33 @@
 import 'package:quiz_app/Model/quiz_history.dart';
-import 'package:quiz_app/View/home_screen.dart';
-import 'package:quiz_app/View/login_screen.dart';
-import 'package:quiz_app/ViewModel/RouteObserver/observ_utils.dart';
-import 'package:quiz_app/ViewModel/quiz_rewiew_provider.dart';
-import 'package:quiz_app/firebase_options.dart';
+// import 'package:quiz_app/View/LeaderBoard_screen.dart';
+// import 'package:quiz_app/View/achievements_display_screen.dart';
+// import 'package:quiz_app/View/home_screen.dart';
+// import 'package:quiz_app/View/login_screen.dart';
+// import 'package:quiz_app/View/profile_screen.dart';
+// import 'package:quiz_app/View/quiz_history_screen.dart';
+// import 'package:quiz_app/View/signup_screen.dart';
+import 'package:quiz_app/ViewModel/quiz_rewiew_screen_provider.dart';
+// import 'package:quiz_app/firebase_options.dart';
 
 import 'package:quiz_app/utilities/constant.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Router;
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 
-import 'package:quiz_app/ViewModel/home_page_functions.dart';
-import 'package:quiz_app/ViewModel/leaderboard_page.dart';
-import 'package:quiz_app/ViewModel/local_storage.dart';
-import 'package:quiz_app/ViewModel/login_page.dart';
-import 'package:quiz_app/ViewModel/navigation.dart';
-import 'package:quiz_app/ViewModel/profile_page_functions.dart';
-import 'package:quiz_app/ViewModel/reset_password_page.dart';
-import 'package:quiz_app/ViewModel/signup_provider.dart';
-import 'ViewModel/quiz_related_functions.dart';
-
+import 'package:quiz_app/ViewModel/home_screen_provider.dart';
+import 'package:quiz_app/ViewModel/leaderboard_screen_provider.dart';
+import 'package:quiz_app/ViewModel/login_screen_provider.dart';
+import 'package:quiz_app/ViewModel/navigation_provider.dart';
+import 'package:quiz_app/ViewModel/profile_screen_provider.dart';
+import 'package:quiz_app/ViewModel/forgot_password_screen_provider.dart';
+import 'package:quiz_app/ViewModel/signup_screen_provider.dart';
+import 'package:quiz_app/utilities/screen_routers.dart';
+import 'ViewModel/quiz_screen_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'ViewModel/quiz_related_functions.dart';
+
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 void main() async {
   await Hive.initFlutter();
@@ -38,7 +42,6 @@ void main() async {
         'auth',
       ) ??
       false;
-  print(auth);
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   runApp(
@@ -56,7 +59,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => QuizPageFunctions(),
+          create: (_) => QuizScreenProvider(),
         ),
         ChangeNotifierProvider(
           create: (_) => LoginPageProvider(),
@@ -65,22 +68,23 @@ class MyApp extends StatelessWidget {
           create: (_) => SignUpPageProvider(),
         ),
         ChangeNotifierProvider(
-          create: (_) => HomePageProvider(),
+          create: (_) => HomeScreenProvider(),
         ),
         ChangeNotifierProvider(
-          create: (_) => ResetPasswordPage(),
+          create: (_) => ForgotPasswordScreenProvider(),
         ),
         ChangeNotifierProvider(
-          create: (_) => LeaderBoardProvider(),
+          create: (_) => LeaderBoardScreenProvider(),
         ),
-        ChangeNotifierProvider(create: (_) => ProfilePageFunctions()),
+        ChangeNotifierProvider(create: (_) => ProfileScreenProvider()),
         ChangeNotifierProvider(create: (_) => Navigation()),
         ChangeNotifierProvider(create: (_) => QuizRewiewProvider()),
-        ChangeNotifierProvider(create: (_) => LocalStorageProvider())
       ],
       child: MaterialApp(
-          navigatorObservers: [ObserverUtils.routeObserver],
-          home: auth ? const HomeScreen() : LoginScreen()),
+        onGenerateRoute: Router.generateRoute,
+        initialRoute: auth ? AppRoutes.home : AppRoutes.login,
+        navigatorObservers: [routeObserver],
+      ),
     );
   }
 }
