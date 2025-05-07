@@ -1,10 +1,6 @@
 # 🎯 Flutter Quiz App
 
-[![Made with Flutter](https://img.shields.io/badge/Made%20with-Flutter-blue)](https://flutter.dev)
-[![GitHub stars](https://img.shields.io/github/stars/your-username/flutter-quiz-app?style=social)](https://github.com/your-username/flutter-quiz-app/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/your-username/flutter-quiz-app?style=social)](https://github.com/your-username/flutter-quiz-app/network)
-[![GitHub issues](https://img.shields.io/github/issues/your-username/flutter-quiz-app)](https://github.com/your-username/flutter-quiz-app/issues)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 
 A powerful, interactive quiz application built with Flutter. Users can select categories, take quizzes, review answers, track time and scores, and unlock achievements. Future support includes cloud sync and social media sharing.
 
